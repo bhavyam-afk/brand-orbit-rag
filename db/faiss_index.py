@@ -18,7 +18,10 @@ def build_faiss_index():
 
     texts = []
     for influencer in influencers:
-        texts.append(create_embedding_text(influencer))
+        text = create_embedding_text(influencer)
+        # store inside influencer
+        influencer["embedding_text"] = text
+        texts.append(text)
     
     embeddings = model.encode(
         texts,
@@ -38,7 +41,7 @@ def build_faiss_index():
     faiss.write_index(index, "data/faiss.index")
     # save metadata
     with open("data/metadata.json", "w") as f:
-        json.dump({ "influencers": influencers, "texts": texts }, f)
+        json.dump(influencers, f)
     print("FAISS index built and saved.") 
 
 if __name__ == "__main__":
