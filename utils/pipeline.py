@@ -5,7 +5,6 @@ from llms.rerank_results import rerank_results
 
 def run_pipeline(query: str):
     original_query = query
-
     # 1. Query refinement
     try:
         if len(query.split()) <= 8:
@@ -17,11 +16,7 @@ def run_pipeline(query: str):
     rrf_scores = hybrid_rrf_scores(query, 10, 60)
 
     # 3. Reranking through LLM.
-    try:
-        reranked_results = rerank_results(query, rrf_scores)
-    except Exception as e:
-        print("Rerank failed:", e)
-        reranked_results = rrf_scores
+    reranked_results = rerank_results(query, rrf_scores)
 
     return {
         "original_query": original_query,

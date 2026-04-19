@@ -6,52 +6,101 @@ from google import genai
 from prompts.reranker import reranker_prompt
 
 
-def _parse_batch_scores(text):
-    """Extract JSON array of scores from LLM response."""
-    json_match = re.search(r"\[.*?\]", text, re.DOTALL)
-    if not json_match:
-        raise ValueError(f"Could not find JSON array in response: {text!r}")
-    return json.loads(json_match.group(0))
-
-
 def rerank_results(query, results):
     if not results:
         return results
-    
+
+    # 1. Setup
     load_dotenv()
-    api_key = os.environ.get("GEMINI_API_KEY")
+    api_key = os.getenv("GEMINI_API_KEY")
     if not api_key:
-        raise RuntimeError("GEMINI_API_KEY environment variable not set")
+        raise RuntimeError("GEMINI_API_KEY not set")
 
     client = genai.Client(api_key=api_key)
-    
-    # Format all results into the prompt
-    influencers_text = "\n".join(
-        f"{i+1}. ID: {item['id']}, Influencer: {item['influencer']}, Hybrid score: {item['score']}"
-        for i, item in enumerate(results)
+
+    # 2. Clean structured input for LLM (IMPORTANT FIX)
+    formatted_results = []
+    for item in results:
+        inf = item["influencer"]
+
+        formatted_results.append({
+            "id": str(item["id"]),
+            "text": f"""
+                Name: {inf.get('username')}
+                Niche: {inf.get('niche')}
+                Description: {inf.get('description')}
+                Engagement: {inf.get('engagement_rate')}
+                Location: {inf.get('location')}
+                """.strip(),
+            "hybrid_score": item["score"]
+        })
+
+    # 3. Build prompt
+    prompt = reranker_prompt.format(
+        query=query,
+        influencers=json.dumps(formatted_results, indent=2)
     )
-    
-    prompt = (
-        f"{reranker_prompt}\n\n"
-        f"Query: {query}\n\n"
-        f"Influencers to rank:\n{influencers_text}\n\n"
-        "Respond with a JSON array of objects with 'id' and 'score' keys, "
-        "e.g., [{\"id\": \"...\", \"score\": 8}, {\"id\": \"...\", \"score\": 7}]\n"
-        "Response:"
-    )
-    
+
+    # 4. Call LLM
     response = client.models.generate_content(
         model="gemma-3-27b-it",
         contents=[prompt]
     )
-    
-    scores_data = _parse_batch_scores(response.text)
-    score_map = {item["id"]: item["score"] for item in scores_data}
-    
-    reranked = [
-        {**item, "llm_score": score_map.get(item["id"], 0)}
-        for item in results
-    ]
-    reranked.sort(key=lambda row: row["llm_score"], reverse=True)
-    return reranked
 
+    # DEBUG (keep for now, remove later)
+    print("\n===== RAW LLM OUTPUT =====\n")
+    print(response.text)
+    print("\n==========================\n")
+
+    # 5. SAFE JSON PARSING (CRITICAL FIX)
+    try:
+        llm_output = response.text.strip()
+
+        # extract JSON array using regex
+        match = re.search(r"\[.*\]", llm_output, re.DOTALL)
+        if not match:
+            raise ValueError("No JSON array found")
+
+        json_str = match.group(0)
+        scores_data = json.loads(json_str)
+
+        # validate structure
+        if not isinstance(scores_data, list):
+            raise ValueError("Parsed data is not a list")
+
+    except Exception as e:
+        print("❌ Failed to parse LLM response:", e)
+        print("❌ Raw response:", repr(response.text))
+
+        return [
+            {
+                "id": str(item["id"]),
+                "influencer": item["influencer"],
+                "hybrid_score": item["score"],
+                "llm_score": 0
+            }
+            for item in results
+        ]
+
+    # 6. Build score map
+    score_map = {
+        str(item["id"]): item.get("score", 0)
+        for item in scores_data
+    }
+
+    # 7. Merge scores
+    reranked = []
+    for item in results:
+        influencer_id = str(item["id"])
+
+        reranked.append({
+            "id": influencer_id,
+            "influencer": item["influencer"],
+            "hybrid_score": item["score"],
+            "llm_score": score_map.get(influencer_id, 0)
+        })
+
+    # 8. Sort
+    reranked.sort(key=lambda x: x["llm_score"], reverse=True)
+
+    return reranked

@@ -14,11 +14,13 @@ def extract_text_values(item):
 def keyword_search(query, top_k=10):
     influencers = load_influencers()
     query_tokens = preprocess(query)
+    
     docTokens = []
     for influencer in influencers:
         text_string = extract_text_values(influencer)
         tokens = preprocess(text_string)
         docTokens.append(tokens)
+    
     bm25 = BM25Okapi(docTokens)
     scores = bm25.get_scores(query_tokens)
     top_influencers = sorted(zip(influencers, scores), key=lambda x: x[1], reverse=True)[:top_k]

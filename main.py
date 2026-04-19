@@ -8,9 +8,8 @@ def print_influencer_details(results):
         print(f"\nResult #{idx}")
         print("------------------------------")
         print(f"ID: {item.get('id')}")
-        print(f"Hybrid score: {item.get('score')}")
-        if item.get("llm_score") is not None:
-            print(f"LLM rerank score: {item.get('llm_score')}")
+        print(f"Hybrid score: {item.get('hybrid_score')}")
+        print(f"LLM rerank score: {item.get('llm_score')}")
         print("Influencer details:")
         print(json.dumps(influencer, indent=2, ensure_ascii=False))
 
