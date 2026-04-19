@@ -18,7 +18,7 @@ def rerank_results(query, results):
 
     client = genai.Client(api_key=api_key)
 
-    # 2. Clean structured input for LLM (IMPORTANT FIX)
+    # 2. Clean structured input for LLMs
     formatted_results = []
     for item in results:
         inf = item["influencer"]
@@ -47,12 +47,7 @@ def rerank_results(query, results):
         contents=[prompt]
     )
 
-    # DEBUG (keep for now, remove later)
-    print("\n===== RAW LLM OUTPUT =====\n")
-    print(response.text)
-    print("\n==========================\n")
-
-    # 5. SAFE JSON PARSING (CRITICAL FIX)
+    # 5. SAFE JSON PARSING
     try:
         llm_output = response.text.strip()
 
@@ -69,8 +64,8 @@ def rerank_results(query, results):
             raise ValueError("Parsed data is not a list")
 
     except Exception as e:
-        print("❌ Failed to parse LLM response:", e)
-        print("❌ Raw response:", repr(response.text))
+        print("Failed to parse LLM response:", e)
+        print("Raw response:", repr(response.text))
 
         return [
             {
@@ -82,7 +77,7 @@ def rerank_results(query, results):
             for item in results
         ]
 
-    # 6. Build score map
+    # 6. Build llm score map
     score_map = {
         str(item["id"]): item.get("score", 0)
         for item in scores_data

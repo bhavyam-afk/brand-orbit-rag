@@ -21,6 +21,7 @@ def keyword_search(query, top_k=10):
         tokens = preprocess(text_string)
         docTokens.append(tokens)
     
+    # bm25 needs list of list as it uses inner list for tokens and outer list as id to map token to.
     bm25 = BM25Okapi(docTokens)
     scores = bm25.get_scores(query_tokens)
     top_influencers = sorted(zip(influencers, scores), key=lambda x: x[1], reverse=True)[:top_k]

@@ -15,7 +15,7 @@ def print_influencer_details(results):
 
 
 def main():
-    query = "funny influencers wit good engament"
+    query = "ai quant hedge fund algo traders influensers for high freq trading signals india"
     result = run_pipeline(query)
 
     print("Original query:", result.get("original_query"))

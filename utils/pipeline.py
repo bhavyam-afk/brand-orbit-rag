@@ -7,13 +7,12 @@ def run_pipeline(query: str):
     original_query = query
     # 1. Query refinement
     try:
-        if len(query.split()) <= 8:
-            query = refactor_query(query)
+        query = refactor_query(query)
     except Exception as e:
-        print("Refactor failed:", e)
+        print("Refactoration of query failed:", e) 
 
-    # 2. Retrieval of 5 * 10 influencers with hybrid search using reciprocal rank fusion.
-    rrf_scores = hybrid_rrf_scores(query, 10, 60)
+    # 2. Retrieval of 2 * 10 influencers with hybrid search using reciprocal rank fusion.
+    rrf_scores = hybrid_rrf_scores(query, top_k=10, k=60) 
 
     # 3. Reranking through LLM.
     reranked_results = rerank_results(query, rrf_scores)

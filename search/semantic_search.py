@@ -35,4 +35,4 @@ def semantic_search(query, top_k=10):
 
     return results
 
-    
+   

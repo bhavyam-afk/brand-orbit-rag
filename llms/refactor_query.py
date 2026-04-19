@@ -1,7 +1,6 @@
 from google import genai
 import os
 from dotenv import load_dotenv
-from typer import prompt
 from prompts.refactor_prompt import refactor_prompt 
 
 def refactor_query(query):
