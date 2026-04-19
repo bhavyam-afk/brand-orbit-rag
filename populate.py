@@ -66,7 +66,7 @@ def main():
         "Creates content about {topic1} investing and {topic2} financial planning.",
         "Shares tips on {topic1} wealth building and {topic2} money management.",
         "Posts about {topic1} strategies and {topic2} in the {style} sector.",
-        "Discusses {{topic1}} markets and {topic2} investment opportunities.",
+        "Discusses {topic1} markets and {topic2} investment opportunities.",
     ]
     }
     

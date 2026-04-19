@@ -11,8 +11,8 @@ def normalise_scores(scores):
         scores[i] = (scores[i] - min_score) / (max_score - min_score) if max_score > min_score else 0.0
 
 def hybrid_rrf_scores(query, top_k=10, k=60):
-    keyword_results = keyword_search(query, top_k=100 * top_k)
-    semantic_results = semantic_search(query, top_k=100 * top_k)
+    keyword_results = keyword_search(query, top_k=50 * top_k)
+    semantic_results = semantic_search(query, top_k=50 * top_k)
 
     rrf_scores = {}
 
@@ -61,7 +61,7 @@ def hybrid_rrf_scores(query, top_k=10, k=60):
 
     results.sort(key=lambda x: x["score"], reverse=True)
 
-    return results[:top_k]
+    return results[:top_k * 5]
 
 def hybrid_score_search(query, top_k=10, alpha=0.75):
     keyword_results = keyword_search(query, top_k=100 * top_k)
@@ -97,20 +97,4 @@ def hybrid_score_search(query, top_k=10, alpha=0.75):
     hybrid_results.sort(key=lambda x: x[1], reverse=True)
 
     return hybrid_results[:top_k]
-
-
-if __name__ == "__main__":
-    results = hybrid_rrf_scores("investing for kids in future", top_k=10, k=60)
-    print("\nTop 10 Influencers for 'investing for kids in future':")
-    print("=" * 50)
-    for i, item in enumerate(results, 1):
-        influencer = item["influencer"]
-        score = item["score"]
-        print(f"{i}. Name: {influencer.get('username', 'Unknown')}")
-        print(f"   Niche: {influencer.get('niche', 'Unknown')}")
-        print(f"   Location: {influencer.get('location', 'Unknown')}")
-        print(f"   Engagement Rate: {influencer.get('engagement_rate', 'N/A')}%")
-        print(f"   Followers: {influencer.get('followers', 'N/A'):,}")
-        print(f"   Hybrid RRF Score: {score:.4f}")
-        print(f"   Description: {influencer.get('description', 'N/A')[:100]}...")
-        print()
+ 
