@@ -17,19 +17,14 @@ def verify_model():
     print(f"Max sequence length: {model.max_seq_length}")
 
 def semantic_search(query, top_k=10):
-    # query embedding made is of shape [1, 384] because passed as a single element in a list. 
-    query_emb = model.encode([query], normalize_embeddings=True)
-    query_emb = np.array(query_emb).astype("float32")
+    query_emb = model.encode([query], normalize_embeddings=True).astype("float32")
 
-    scores, indices = index.search(query_emb, top_k) 
+    scores, indices = index.search(query_emb, top_k)
 
     results = []
-    for i, idx in enumerate(indices[0]):
-        influencer = influencers[idx]
-        score = scores[0][i]
-
+    for idx, score in zip(indices[0], scores[0]):
         results.append({
-            "influencer": influencer,
+            "id": influencers[idx]["id"],
             "score": float(score)
         })
 

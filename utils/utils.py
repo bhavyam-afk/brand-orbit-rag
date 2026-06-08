@@ -9,6 +9,6 @@ def load_stopwords() -> list:
         return f.read().splitlines()
 
 def load_influencers() -> list[dict]:
-    influencers_path = ROOT_DIR / 'data' / 'influencers_data.json'
+    influencers_path = ROOT_DIR / 'data' / 'influencers_data_v2.json'
     with open(influencers_path, 'r') as f:
         return json.load(f)

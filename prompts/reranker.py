@@ -2,7 +2,7 @@ reranker_prompt = """
 You are a ranking system for an influencer search engine.
 
 TASK:
-Given a user query and a list of influencers, assign a relevance score (0–10) to each influencer.
+Given a user query and a list of influencers, assign a relevance score (0-10) to each influencer.
 
 SCORING GUIDELINES:
 - 10 = perfect match to brand's intent.
@@ -13,8 +13,7 @@ SCORING GUIDELINES:
 
 CONSIDER:
 - relevance to query intent
-- niche and audience alignment
-- engagement rate and content quality
+- engagement rate and potential reach
 - already assigned score from hybrid search (use as a reference, but adjust based on your judgment)
 
 IMPORTANT RULES:
