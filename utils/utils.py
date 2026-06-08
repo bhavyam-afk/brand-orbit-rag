@@ -12,3 +12,10 @@ def load_influencers() -> list[dict]:
     influencers_path = ROOT_DIR / 'data' / 'influencers_data_v2.json'
     with open(influencers_path, 'r') as f:
         return json.load(f)
+
+def idToInfluencer(id):
+    influencers = load_influencers()
+    for influencer in influencers:
+        if influencer['id'] == id:
+            return influencer
+    return None

@@ -12,8 +12,6 @@ def refactor_query(query):
     formatted_prompt = refactor_prompt.format(query=query)     
 
     client = genai.Client(api_key=api_key)
-    response = client.models.generate_content(
-        model="gemma-3-27b-it",
-        contents=[formatted_prompt]
-    )
+    response = client.models.generate_content(model="gemma-3-27b-it", contents=[formatted_prompt])
+    
     return response.text
