@@ -1,20 +1,17 @@
 from sentence_transformers import SentenceTransformer
 import faiss
-import numpy as np
 import json
 
-model = SentenceTransformer('all-MiniLM-L6-v2')
+def load_resources():
+    model = SentenceTransformer("all-MiniLM-L6-v2")
+    index = faiss.read_index("data/faiss.index")
 
-# load index once (basically pre-built vector database)
-index = faiss.read_index("data/faiss.index")
+    with open("data/metadata.json") as f:
+        influencers = json.load(f)
 
-# load metadata once
-with open("data/metadata.json") as f:
-    influencers = json.load(f)
+    return model, index, influencers
 
-def verify_model():
-    print(f"Model loaded: {model}")
-    print(f"Max sequence length: {model.max_seq_length}")
+model, index, influencers = load_resources()
 
 def semantic_search(query, top_k=10):
     query_emb = model.encode([query], normalize_embeddings=True).astype("float32")
@@ -22,12 +19,9 @@ def semantic_search(query, top_k=10):
     scores, indices = index.search(query_emb, top_k)
 
     results = []
+
     for idx, score in zip(indices[0], scores[0]):
-        results.append({
-            "id": influencers[idx]["id"],
-            "score": float(score)
-        })
+        doc_id = influencers[idx]["id"]
+        results.append((doc_id, float(score)))
 
-    return results
-
-   
+    return results 
