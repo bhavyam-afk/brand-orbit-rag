@@ -19,24 +19,13 @@ def hybrid_rrf_scores(query, top_k=10, k=60):
     semantic_results = semantic_search(query, top_k=50 * top_k)
 
     rrf_scores = {}
-
     for rank, (doc_id, _) in enumerate(keyword_results):
-        rrf_scores[doc_id] = (
-            rrf_scores.get(doc_id, 0)
-            + 1 / (k + rank + 1)
-        )
+        rrf_scores[doc_id] = float((rrf_scores.get(doc_id, 0) + 1 / (k + rank + 1)))
 
     for rank, (doc_id, _) in enumerate(semantic_results):
-        rrf_scores[doc_id] = (
-            rrf_scores.get(doc_id, 0)
-            + 1 / (k + rank + 1)
-        )
+        rrf_scores[doc_id] = float((rrf_scores.get(doc_id, 0) + 1 / (k + rank + 1)))
 
-    results = sorted(
-        rrf_scores.items(),
-        key=lambda x: x[1],
-        reverse=True
-    )
+    results = sorted(rrf_scores.items(), key=lambda x: x[1], reverse=True)
 
     return results[:top_k]
 
@@ -67,14 +56,11 @@ def hybrid_score_search(query, top_k=10, alpha=0.7):
 
     for doc_id in common_ids:
 
-        score = ((1 - alpha) * keyword_map.get(doc_id, 0)) + ((alpha) * semantic_map.get(doc_id, 0))
+        score = float(((1 - alpha) * keyword_map.get(doc_id, 0)) + ((alpha) * semantic_map.get(doc_id, 0)))
 
-        results.append((doc_id, score))
+        results.append((int(doc_id), score))
 
-    results.sort(
-        key=lambda x: x[1],
-        reverse=True
-    )
+    results.sort(key=lambda x: x[1], reverse=True)
 
     return results[:top_k]
  
