@@ -18,7 +18,7 @@ router = APIRouter()
 
 class SearchRequest(BaseModel):
     query: str
-    pipeline: str = "hybrid_rrf_rerank"
+    pipeline: str = "bm25"
     top_k: int = 10
 
 
