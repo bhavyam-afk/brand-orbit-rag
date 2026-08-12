@@ -1,3 +1,7 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "rag-influencers"
 version = "0.1.0"
@@ -17,4 +21,22 @@ dependencies = [
     "sentence-transformers>=5.4.1",
     "tabulate>=0.10.0",
     "uvicorn>=0.49.0",
+]
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = [
+    "api*",
+    "data*",
+    "index*",
+    "search*",
+    "prompts*",
+    "evaluate*",
+    "pipelines*",
+    "retrieval*",
+    "preprocessing*",
+    "utils*",
 ]
