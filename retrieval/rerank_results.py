@@ -4,30 +4,16 @@ import re
 from dotenv import load_dotenv
 from google import genai
 from prompts.reranker import reranker_prompt
-from utils.utils import idToInfluencer, load_influencers
-
-influencers = load_influencers()
+from utils.utils import get_audience_tier, load_influencers
 
 load_dotenv()
+influencers = load_influencers()
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 id_map = {
     inf["id"]: inf
     for inf in influencers
 }
-
-def get_audience_tier(fc):
-    if fc >= 10_000_000:
-        return "mega influencer"
-
-    elif fc >= 1_000_000:
-        return "macro influencer"
-
-    elif fc >= 100_000:
-        return "micro influencer"
-
-    else:
-        return "nano influencer"
 
 def build_rerank_input(results):
     formatted = []

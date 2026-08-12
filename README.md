@@ -63,7 +63,7 @@ This improves both keyword matching and semantic retrieval.
 ## Search Methods
 ### 1. Keyword Search (BM25)
 ### 2. Semantic Search (FAISS + Sentence Transformers)
-## Hybrid Retrieval Pipelines
+### 3. Hybrid Retrieval Pipelines (Score and Re-ranking)
 
 ---
 
@@ -108,7 +108,7 @@ Final Score =
 Flow:
 
 ```text
-Query -> LLM Refactor -> BM25 -> Semantic Search -> RRF Fusion -> Weighted Fusion
+Query -> LLM Refactor -> BM25 -> Semantic Search -> Weighted Fusion
 ```
 
 Purpose:

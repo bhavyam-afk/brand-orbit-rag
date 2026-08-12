@@ -1,20 +1,7 @@
-from utils.utils import load_influencers
+from utils.utils import load_influencers, get_audience_tier
 from preprocessing.preprocess import preprocess
 from rank_bm25 import BM25Okapi
 
-def get_audience_tier(fc):
-    if fc >= 10_000_000:
-        return "mega influencer"
-
-    elif fc >= 1_000_000:
-        return "macro influencer"
-
-    elif fc >= 100_000:
-        return "micro influencer"
-
-    else:
-        return "nano influencer"
-    
 def extract_text_values(inf):
     country = inf['country']
     return f"""

@@ -13,7 +13,7 @@ SCORING GUIDELINES:
 
 CONSIDER:
 - relevance to query intent
-- engagement rate and potential reach
+- engagement rate, potential reach and location of influencer
 - already assigned score from hybrid search (use as a reference, but adjust based on your judgment)
 
 IMPORTANT RULES:
