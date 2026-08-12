@@ -1145,7 +1145,7 @@ wheels = [
 [[package]]
 name = "rag-influencers"
 version = "0.1.0"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
     { name = "dotenv" },
     { name = "faiss-cpu" },
